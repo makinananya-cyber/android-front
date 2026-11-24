@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- The system splash icon: the HisaabWise mark centred in the 2/3 safe zone. -->
+<inset xmlns:android="http://schemas.android.com/apk/res/android"
+    android:inset="28dp">
+    <bitmap
+        android:gravity="center"
+        android:src="@drawable/hw_mark" />
+</inset>
