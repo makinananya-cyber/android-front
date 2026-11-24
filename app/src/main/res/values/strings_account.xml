@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Android-only Account copy (iOS uses the navigation stack's own back button). -->
+<resources>
+    <string name="account_back">Back</string>
+</resources>

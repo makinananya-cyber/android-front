@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Android-only copy for Expenses (iOS uses the system back button's own label). -->
+    <string name="expenses_nav_back">Back</string>
+</resources>

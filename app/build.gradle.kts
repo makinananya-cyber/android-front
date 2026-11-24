@@ -6,7 +6,10 @@ plugins {
 
 android {
     namespace = "com.hisaabwise"
-    compileSdk = 37
+    compileSdk {
+        // Compose 1.13 requires 37.1 (the AAR metadata check fails on 37.0).
+        version = release(37) { minorApiLevel = 1 }
+    }
 
     defaultConfig {
         applicationId = "com.hw.hisaabwise"
@@ -23,9 +26,10 @@ android {
 
     buildTypes {
         debug {
-            // 10.0.2.2 is the host machine's localhost as seen from the Android emulator,
-            // where the backend runs with `npm run dev` on port 8080.
-            buildConfigField("String", "API_BASE_URL", "\"http://10.0.2.2:8080\"")
+            // The backend runs on this machine with `npm run dev` (port 8080). Forward it to the
+            // emulator or a USB device with `adb reverse tcp:8080 tcp:8080`. (10.0.2.2 is blocked for
+            // apps by Android 17's local-network restriction; loopback is not.)
+            buildConfigField("String", "API_BASE_URL", "\"http://localhost:8080\"")
             applicationIdSuffix = ".debug"
         }
         create("staging") {

@@ -128,7 +128,7 @@ content.load<Curriculum>(ContentResource.Curriculum)   // ETag cache, works offl
 
 ```bash
 export JAVA_HOME="/Applications/Android Studio.app/Contents/jbr/Contents/Home"
-./gradlew :app:assembleDebug          # debug → http://10.0.2.2:8080 (backend `npm run dev` on the host)
+./gradlew :app:assembleDebug          # debug → http://localhost:8080 (backend `npm run dev`; run `adb reverse tcp:8080 tcp:8080`)
 ./gradlew :app:assembleStaging        # staging → Render
 ./gradlew :app:testDebugUnitTest
 ```
@@ -137,7 +137,7 @@ export JAVA_HOME="/Applications/Android Studio.app/Contents/jbr/Contents/Home"
 
 | Build type | API base URL | App id |
 |---|---|---|
-| debug | `http://10.0.2.2:8080` | `com.hw.hisaabwise.debug` |
+| debug | `http://localhost:8080` (via `adb reverse`) | `com.hw.hisaabwise.debug` |
 | staging | `https://hisaabwise-backend-0l9b.onrender.com` | `com.hw.hisaabwise.staging` |
 | release | `https://hisaabwise-backend-0l9b.onrender.com` | `com.hw.hisaabwise` |
 

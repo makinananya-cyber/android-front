@@ -55,6 +55,7 @@ import com.hisaabwise.core.designsystem.LocalReduceMotion
 import com.hisaabwise.core.designsystem.components.HWButton
 import com.hisaabwise.core.designsystem.components.HWButtonStyle
 import com.hisaabwise.core.walkthrough.WalkthroughModel
+import com.hisaabwise.core.walkthrough.WalkthroughTarget
 
 /**
  * The guided tour: a navy scrim with a punched-out spotlight and a pulsing ring around the
@@ -64,7 +65,8 @@ import com.hisaabwise.core.walkthrough.WalkthroughModel
 @Composable
 fun WalkthroughOverlay(model: WalkthroughModel, state: WalkthroughModel.State) {
     val step = model.current(state) ?: return
-    val firstRun = step.whenPresent != null && state.rects.containsKey(step.whenPresent)
+    // A first-run month (no expenses yet) shows the first-run Add button; spend/add use first-run copy.
+    val firstRun = state.rects.containsKey(WalkthroughTarget.AddExpenseFirst)
     val targetKey = if (step.whenPresent != null && state.rects.containsKey(step.whenPresent)) step.instead else step.target
     val rect: Rect? = targetKey?.let { state.rects[it] }
     val reduceMotion = LocalReduceMotion.current

@@ -26,7 +26,9 @@ class OkHttpTransport(
     private val client: OkHttpClient = OkHttpClient.Builder()
         .cache(null) // revalidation is done explicitly with ETags, like iOS (urlCache = nil)
         .callTimeout(30, TimeUnit.SECONDS)
-        .retryOnConnectionFailure(false)
+        // Recover from a pooled keep-alive connection the server already closed (URLSession does this
+        // silently). Safe for POSTs: every one carries an Idempotency-Key.
+        .retryOnConnectionFailure(true)
         .build(),
 ) : HttpTransport {
 

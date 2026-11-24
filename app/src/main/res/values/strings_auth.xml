@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Android-only copy for the auth feature (no iOS key exists for these). -->
+<resources>
+    <string name="auth_back">Back</string>
+    <string name="auth_terms_and">and the</string>
+    <string name="auth_terms_terms">Terms of Service</string>
+</resources>

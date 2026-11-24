@@ -27,7 +27,7 @@ class SessionCoordinator(
     private val client: ApiClient,
     private val keptStore: TokenStore,
     private val transientStore: TokenStore,
-    scope: CoroutineScope,
+    private val scope: CoroutineScope,
 ) {
     data class SessionState(
         val isSignedIn: Boolean = false,
@@ -59,7 +59,8 @@ class SessionCoordinator(
         )
         client.beginSession(tokens, if (keepMeSignedIn) keptStore else transientStore)
         _state.update { it.copy(isSignedIn = true, lastAuthEntry = AuthEntry.SignedIn) }
-        revalidate()
+        // On the app scope: the sign-in screen leaves composition the moment isSignedIn flips.
+        scope.launch { revalidate() }
     }
 
     suspend fun register(request: RegistrationRequest) {
@@ -68,7 +69,7 @@ class SessionCoordinator(
         )
         client.beginSession(tokens, keptStore)
         _state.update { it.copy(isSignedIn = true, lastAuthEntry = AuthEntry.Registered) }
-        revalidate()
+        scope.launch { revalidate() }
     }
 
     /** The only user-initiated sign-out. */

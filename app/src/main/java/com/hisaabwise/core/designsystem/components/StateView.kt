@@ -165,7 +165,7 @@ fun HWBackBar(
     title: String,
     onBack: () -> Unit,
     modifier: Modifier = Modifier,
-    backDescription: String = "Back",
+    backDescription: String = stringResource(R.string.walkthrough_back),
     trailing: @Composable () -> Unit = {},
 ) {
     Box(

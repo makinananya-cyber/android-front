@@ -128,7 +128,8 @@ fun HWTextField(
                 imeAction = imeAction,
                 autoCorrectEnabled = !isSecure && keyboardType == KeyboardType.Text,
             ),
-            keyboardActions = KeyboardActions(onAny = { onImeAction?.invoke() }),
+            // Without a handler the IME action keeps its default (Next moves focus, Done hides the keyboard).
+            keyboardActions = if (onImeAction != null) KeyboardActions(onAny = { onImeAction() }) else KeyboardActions.Default,
             modifier = Modifier
                 .fillMaxWidth()
                 .onFocusChanged { focused = it.isFocused }

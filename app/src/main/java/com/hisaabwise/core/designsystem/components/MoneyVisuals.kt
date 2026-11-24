@@ -35,6 +35,8 @@ import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.platform.LocalLayoutDirection
+import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.selected
@@ -223,6 +225,8 @@ fun HWSavingsMeter(
             }
         }
         Spacer(Modifier.height(6.dp))
+        // The track reads from zero to goal in the reading direction, so the gradient mirrors in RTL with the pin.
+        val rtl = LocalLayoutDirection.current == LayoutDirection.Rtl
         BoxWithConstraints(Modifier.fillMaxWidth().height(30.dp)) {
             val w = maxWidth
             Box(
@@ -231,7 +235,7 @@ fun HWSavingsMeter(
                     .fillMaxWidth()
                     .height(18.dp)
                     .clip(HWRadius.Pill)
-                    .background(Brush.horizontalGradient(HWColors.meterStops)),
+                    .background(Brush.horizontalGradient(if (rtl) HWColors.meterStops.reversed() else HWColors.meterStops)),
             )
             Box(
                 Modifier
@@ -270,10 +274,12 @@ fun HWBudgetBar(
         label = "budget",
     )
     val track = if (onHero) HWColors.BrandSurface.copy(alpha = 0.25f) else HWColors.EmptyTrack
+    val rtl = LocalLayoutDirection.current == LayoutDirection.Rtl
+    fun directed(colors: List<Color>) = Brush.horizontalGradient(if (rtl) colors.reversed() else colors)
     val bar: Brush = when {
-        isOver -> Brush.horizontalGradient(listOf(HWColors.MeterLow, HWColors.Danger))
-        onHero -> Brush.horizontalGradient(listOf(HWColors.BrandInkAccent, HWColors.AccentMuted))
-        else -> Brush.horizontalGradient(listOf(HWColors.Accent, HWColors.AccentMuted))
+        isOver -> directed(listOf(HWColors.MeterLow, HWColors.Danger))
+        onHero -> directed(listOf(HWColors.BrandInkAccent, HWColors.AccentMuted))
+        else -> directed(listOf(HWColors.Accent, HWColors.AccentMuted))
     }
     Box(modifier.fillMaxWidth().height(height).clip(HWRadius.Pill).background(track)) {
         Box(Modifier.fillMaxWidth(animated).fillMaxHeight().clip(HWRadius.Pill).background(bar))

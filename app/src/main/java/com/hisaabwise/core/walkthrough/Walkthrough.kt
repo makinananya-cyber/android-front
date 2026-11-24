@@ -1,5 +1,13 @@
 package com.hisaabwise.core.walkthrough
 
+import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.relocation.BringIntoViewRequester
+import androidx.compose.foundation.relocation.bringIntoViewRequester
+import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.composed
@@ -106,8 +114,18 @@ class WalkthroughModel(private val prefs: AppPreferences, val steps: List<Walkth
 
 val LocalWalkthrough = staticCompositionLocalOf<WalkthroughModel?> { null }
 
-/** Tag an element so the guided tour can spotlight it. */
+/**
+ * Tag an element so the guided tour can spotlight it. The rect is withdrawn when the element leaves
+ * composition (so a first-run button that has gone away no longer counts), and the element is
+ * scrolled into view when the tour reaches it.
+ */
+@OptIn(ExperimentalFoundationApi::class)
 fun Modifier.walkthroughTarget(target: WalkthroughTarget): Modifier = composed {
-    val model = LocalWalkthrough.current
-    if (model == null) this else onGloballyPositioned { model.report(target, it.boundsInRoot()) }
+    val model = LocalWalkthrough.current ?: return@composed this
+    val requester = remember { BringIntoViewRequester() }
+    val state by model.state.collectAsState()
+    val isCurrent = model.current(state)?.let { it.target == target || it.instead == target } == true
+    DisposableEffect(model, target) { onDispose { model.report(target, null) } }
+    LaunchedEffect(isCurrent) { if (isCurrent) requester.bringIntoView() }
+    this.bringIntoViewRequester(requester).onGloballyPositioned { model.report(target, it.boundsInRoot()) }
 }

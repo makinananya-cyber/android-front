@@ -1,6 +1,6 @@
 package com.hisaabwise.core.network
 
-import android.util.Base64
+import java.util.Base64
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
 
@@ -24,7 +24,7 @@ class AccessToken private constructor(val raw: String, val expiresAtEpochSeconds
             val segments = raw.split(".")
             if (segments.size != 3) return null
             return try {
-                val payload = Base64.decode(segments[1], Base64.URL_SAFE or Base64.NO_PADDING or Base64.NO_WRAP)
+                val payload = Base64.getUrlDecoder().decode(segments[1].trimEnd('='))
                 val claims = json.decodeFromString(Claims.serializer(), payload.decodeToString())
                 AccessToken(raw, claims.exp, claims.sec)
             } catch (_: Exception) {
